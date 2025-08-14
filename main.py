@@ -1,44 +1,53 @@
 import streamlit as st
 
-# MBTI별 데이터
-mbti_data = {
-    "INTJ": {
-        "desc": "전략가형 — 장기적인 계획과 분석을 즐기고 차분한 성격",
-        "look": "차가운 첫인상, 깔끔하고 단정한 스타일을 선호",
-        "ideal": "지적인 대화가 가능한 사람, 계획적이고 자기 관리 잘하는 사람",
-        "image": "https://i.ibb.co/Zc2VNhq/intj.jpg"
+# 페이지 설정
+st.set_page_config(page_title="MBTI 궁합 테스트", page_icon="💞", layout="centered")
+
+# CSS 스타일 (카드 디자인)
+st.markdown("""
+    <style>
+    .result-card {
+        background-color: #fff5f8;
+        padding: 20px;
+        border-radius: 15px;
+        border: 2px solid #ff99b3;
+        box-shadow: 2px 2px 10px rgba(255, 153, 179, 0.3);
+        margin-top: 20px;
+    }
+    .celeb {
+        font-weight: bold;
+        color: #ff4d6d;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# MBTI 궁합 + 이상형 연예인 데이터
+compatibility_data = {
+    ("INTJ", "ENFP"): {
+        "score": 5,
+        "desc": "서로 다른 성향이 잘 맞는 궁합! 계획적인 INTJ와 자유로운 ENFP가 좋은 균형을 만듭니다.",
+        "ideal_celeb": "박보검, 아이유"
     },
-    "ENFP": {
-        "desc": "재기발랄한 활동가형 — 새로운 경험과 사람을 좋아하는 타입",
-        "look": "밝고 활발한 표정, 캐주얼하고 개성 있는 패션",
-        "ideal": "함께 웃고 모험할 수 있는 사람, 즉흥적인 데 매력 느끼는 타입",
-        "image": "https://i.ibb.co/Jr99sgh/enfp.jpg"
+    ("ENFP", "INFJ"): {
+        "score": 4,
+        "desc": "깊이 있는 대화를 즐기며 서로의 가치관을 존중하는 이상적인 관계.",
+        "ideal_celeb": "수지, 공유"
     },
-    "INFJ": {
-        "desc": "옹호자형 — 깊이 있는 관계와 가치 추구를 좋아하는 타입",
-        "look": "잔잔하고 따뜻한 미소, 차분하고 깔끔한 복장",
-        "ideal": "마음이 따뜻하고 배려심 깊은 사람, 가치관이 맞는 사람",
-        "image": "https://i.ibb.co/Y8s6fjq/infj.jpg"
+    ("ISTJ", "ESFP"): {
+        "score": 3,
+        "desc": "서로의 차이를 이해하면 보완이 가능한 궁합.",
+        "ideal_celeb": "이승기, 손예진"
     },
-    "ESTP": {
-        "desc": "사업가형 — 에너지 넘치고 현실 감각이 뛰어난 타입",
-        "look": "활기찬 표정, 스포츠 스타일이나 스트리트 패션 선호",
-        "ideal": "자유롭고 재미있는 사람, 즉흥적인 모험 즐기는 사람",
-        "image": "https://i.ibb.co/NnXc7Yw/estp.jpg"
+    ("ENTP", "ENTP"): {
+        "score": 2,
+        "desc": "재미는 있지만 서로 너무 비슷해 금방 질릴 수 있습니다.",
+        "ideal_celeb": "유재석, 김고은"
     }
 }
 
-st.set_page_config(page_title="MBTI 외모 & 이상형 추천", page_icon="💘", layout="centered")
-
-st.title("💘 MBTI 기반 외모 & 이상형 추천")
-st.markdown("MBTI를 선택하면 해당 유형의 특징, 이미지, 이상형을 알려드립니다!")
+# 타이틀
+st.markdown("<h1 style='text-align: center; color: #ff4d6d;'>💞 MBTI 궁합 테스트 💞</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>두 사람의 MBTI를 선택하면 궁합과 이상형 연예인을 알려드립니다!</p>", unsafe_allow_html=True)
 
 # MBTI 선택
-selected_mbti = st.selectbox("당신의 MBTI를 선택하세요", list(mbti_data.keys()))
-
-if st.button("결과 보기"):
-    data = mbti_data[selected_mbti]
-    st.subheader(f"💡 {selected_mbti} — {data['desc']}")
-    st.image(data["image"], use_container_width=True)
-    st.markdown(f"**외모 특징:** {data['look']}")
-    st.markdown(f"**이상형:** {data['ideal']}")
+mbti_list = sorted(set([mb]()_

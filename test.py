@@ -1,19 +1,63 @@
-# app.py
-
 import streamlit as st
-import random
-import time
 
-# 페이지 설정
-st.set_page_config(page_title="심리 테스트", layout="centered")
+st.set_page_config(page_title="🧠 심리 테스트", layout="centered")
 
-# 세션 초기화
+# 스타일 꾸미기 (간단한 CSS)
+st.markdown("""
+    <style>
+    .title {
+        font-size: 38px;
+        font-weight: 700;
+        color: #4B0082;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .subtitle {
+        font-size: 18px;
+        color: #6A5ACD;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .question {
+        font-size: 20px;
+        font-weight: 600;
+        color: #483D8B;
+        margin-top: 20px;
+    }
+    .result {
+        background: #E6E6FA;
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 30px;
+        font-size: 18px;
+        color: #2F4F4F;
+        box-shadow: 3px 3px 8px #B0C4DE;
+    }
+    .recommend {
+        margin-top: 15px;
+        font-weight: 600;
+        color: #4B0082;
+    }
+    .footer {
+        margin-top: 50px;
+        font-size: 12px;
+        color: #999999;
+        text-align: center;
+        font-style: italic;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# 제목 & 부제목
+st.markdown('<div class="title">🧠 나만의 심리 유형 테스트</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">아래 질문에 답하고 내 심리 스타일을 알아봐요!</div>', unsafe_allow_html=True)
+
+# 세션 상태 초기화
 if 'submitted' not in st.session_state:
     st.session_state.submitted = False
 if 'answers' not in st.session_state:
-    st.session_state.answers = []
+    st.session_state.answers = [None]*5
 
-# 점수 초기화
 scores = {
     "분석형": 0,
     "감정형": 0,
@@ -21,7 +65,6 @@ scores = {
     "행동형": 0
 }
 
-# 질문 리스트
 questions = [
     {
         "question": "1. 누군가 고민을 이야기하면 나는?",
@@ -70,57 +113,43 @@ questions = [
     },
 ]
 
-st.title("🧠 당신의 심리 유형 테스트")
-
-# 질문 출력
+# 질문 출력 및 답변 저장
 for i, q in enumerate(questions):
-    answer = st.radio(q["question"], list(q["options"].keys()), key=f"q{i}")
-    st.session_state.answers.append(answer)
+    st.markdown(f'<div class="question">{q["question"]}</div>', unsafe_allow_html=True)
+    ans = st.radio("", list(q["options"].keys()), index=questions[i]["options"].keys().index(st.session_state.answers[i]) if st.session_state.answers[i] else 0, key=f"q{i}")
+    st.session_state.answers[i] = ans
 
-# 제출 버튼
+# 결과 버튼 및 처리
 if st.button("🔍 결과 보기") and not st.session_state.submitted:
     st.session_state.submitted = True
 
-    # 점수 계산
     for i, q in enumerate(questions):
-        user_answer = st.session_state.answers[i]
-        category = q["options"][user_answer]
+        category = q["options"][st.session_state.answers[i]]
         scores[category] += 1
 
     result = max(scores, key=scores.get)
 
-    st.subheader(f"🧾 당신의 심리 유형: **{result}**")
+    # 결과별 설명과 추천
+    descriptions = {
+        "분석형": ("🎯 분석형", "논리적이고 계획적인 성향이에요.", "『논리의 기술』", "《인셉션》"),
+        "감정형": ("💖 감정형", "감정을 잘 이해하고 공감하는 타입입니다.", "『감정 수업』", "《이터널 선샤인》"),
+        "혼란형": ("🌀 혼란형", "걱정이 많고 내면이 깊어요.", "『나는 생각이 너무 많아』", "《인사이드 아웃》"),
+        "행동형": ("🔥 행동형", "즉흥적이고 에너지가 넘치는 스타일입니다.", "『기억 전달자』", "《포레스트 검프》"),
+    }
 
-    # 결과별 설명 + 추천
-    if result == "분석형":
-        desc = "🎯 분석형 - 논리적, 계획적이며 문제해결을 중시합니다."
-        book = "『논리의 기술』"
-        movie = "《인셉션》"
-    elif result == "감정형":
-        desc = "💖 감정형 - 공감과 감성 중심, 타인의 감정을 잘 이해합니다."
-        book = "『감정 수업』"
-        movie = "《이터널 선샤인》"
-    elif result == "혼란형":
-        desc = "🌀 혼란형 - 걱정이 많고 불안정하지만 내면이 깊습니다."
-        book = "『나는 생각이 너무 많아』"
-        movie = "《인사이드 아웃》"
-    else:
-        desc = "🔥 행동형 - 즉흥적이고 도전적인 스타일, 에너지 넘칩니다."
-        book = "『기억 전달자』"
-        movie = "《포레스트 검프》"
+    title, desc, book, movie = descriptions[result]
 
-    # 결과 출력
-    st.write(desc)
-    st.markdown(f"**📚 추천 책:** {book}")
-    st.markdown(f"**🎬 추천 영화:** {movie}")
+    st.markdown(f'<div class="result"><h2>{title}</h2><p>{desc}</p>'
+                f'<p class="recommend">📚 추천 책: {book}</p>'
+                f'<p class="recommend">🎬 추천 영화: {movie}</p></div>', unsafe_allow_html=True)
 
-    # 공유용 텍스트
-    st.text_area("📤 결과 공유 (복사해서 사용하세요)", f"🧠 나의 심리 유형은 [{result}]!\n\n{desc}\n\n📚 {book}\n🎬 {movie}", height=150)
+    share_text = f"나의 심리 유형은 [{result}]!\n\n{desc}\n📚 {book}\n🎬 {movie}"
+    st.text_area("📤 결과 공유 (복사해서 사용하세요)", share_text, height=150)
 
-    # 새로 시작 버튼
-    if st.button("🔄 다시 테스트하기"):
-        for i in range(len(questions)):
-            st.session_state[f"q{i}"] = None
-        st.session_state.submitted = False
-        st.session_state.answers = []
-        st.experimental_rerun()
+# 다시하기 버튼 (항상 보이도록)
+if st.button("🔄 다시 테스트하기"):
+    st.session_state.submitted = False
+    st.session_state.answers = [None]*len(questions)
+    st.experimental_rerun()
+
+st.markdown('<div class="footer">※ 이 테스트는 재미로 하는 심리 테스트입니다.</div>', unsafe_allow_html=True)

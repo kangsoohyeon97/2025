@@ -1,10 +1,17 @@
-# psychology_test_with_recommendations.py
+# app.py
 
 import streamlit as st
+import random
+import time
 
+# 페이지 설정
 st.set_page_config(page_title="심리 테스트", layout="centered")
-st.title("🧠 당신의 심리 유형 테스트")
-st.write("10개의 질문에 답하고 당신의 심리적 성향을 알아보세요!")
+
+# 세션 초기화
+if 'submitted' not in st.session_state:
+    st.session_state.submitted = False
+if 'answers' not in st.session_state:
+    st.session_state.answers = []
 
 # 점수 초기화
 scores = {
@@ -14,7 +21,7 @@ scores = {
     "행동형": 0
 }
 
-# 질문 목록
+# 질문 리스트
 questions = [
     {
         "question": "1. 누군가 고민을 이야기하면 나는?",
@@ -53,16 +60,7 @@ questions = [
         }
     },
     {
-        "question": "5. 친구와 갈등이 생기면?",
-        "options": {
-            "대화로 논리적으로 풀려 한다.": "분석형",
-            "상대의 기분을 먼저 생각한다.": "감정형",
-            "그 상황이 계속 떠오르며 힘들다.": "혼란형",
-            "시간 지나면 괜찮다며 넘긴다.": "행동형"
-        }
-    },
-    {
-        "question": "6. 결정을 내려야 할 때 나는?",
+        "question": "5. 결정을 내려야 할 때 나는?",
         "options": {
             "이유와 근거를 따진다.": "분석형",
             "기분과 감정에 따른다.": "감정형",
@@ -70,96 +68,59 @@ questions = [
             "그냥 느낌대로 행동한다.": "행동형"
         }
     },
-    {
-        "question": "7. 타인의 평가에 대해 나는?",
-        "options": {
-            "객관적으로 분석하려 한다.": "분석형",
-            "감정이 상할 수 있다.": "감정형",
-            "오래도록 신경 쓰인다.": "혼란형",
-            "신경 안 쓰고 넘긴다.": "행동형"
-        }
-    },
-    {
-        "question": "8. 새로운 프로젝트가 주어졌을 때 나는?",
-        "options": {
-            "계획을 세우고 구조를 짠다.": "분석형",
-            "의미와 목적을 고민한다.": "감정형",
-            "잘할 수 있을지 걱정된다.": "혼란형",
-            "일단 시작해본다.": "행동형"
-        }
-    },
-    {
-        "question": "9. 슬픔을 느낄 때 나는?",
-        "options": {
-            "원인을 찾고 정리한다.": "분석형",
-            "눈물을 흘리며 감정을 느낀다.": "감정형",
-            "쉽게 빠져나오지 못한다.": "혼란형",
-            "슬픔을 잊으려 바쁘게 움직인다.": "행동형"
-        }
-    },
-    {
-        "question": "10. 여유 시간이 생기면 나는?",
-        "options": {
-            "무언가를 배우거나 정리한다.": "분석형",
-            "가족, 친구와 감정을 나눈다.": "감정형",
-            "마음이 불안해서 쉬기 어렵다.": "혼란형",
-            "즉흥 여행을 떠난다.": "행동형"
-        }
-    },
 ]
 
-answers = []
-for q in questions:
-    answer = st.radio(q["question"], list(q["options"].keys()), key=q["question"])
-    answers.append(answer)
+st.title("🧠 당신의 심리 유형 테스트")
 
-# 결과 확인 버튼
-if st.button("🔍 결과 보기"):
+# 질문 출력
+for i, q in enumerate(questions):
+    answer = st.radio(q["question"], list(q["options"].keys()), key=f"q{i}")
+    st.session_state.answers.append(answer)
+
+# 제출 버튼
+if st.button("🔍 결과 보기") and not st.session_state.submitted:
+    st.session_state.submitted = True
+
+    # 점수 계산
     for i, q in enumerate(questions):
-        category = q["options"][answers[i]]
+        user_answer = st.session_state.answers[i]
+        category = q["options"][user_answer]
         scores[category] += 1
 
-    # 최고 점수 유형 도출
     result = max(scores, key=scores.get)
 
     st.subheader(f"🧾 당신의 심리 유형: **{result}**")
 
-    # 결과 텍스트 및 추천
+    # 결과별 설명 + 추천
     if result == "분석형":
-        description = (
-            "🎯 **분석형**\n\n- 문제 해결을 위해 논리적 사고를 사용합니다.\n"
-            "- 감정보다는 구조와 계획을 중시해요.\n- 냉정하고 신중한 판단을 잘합니다.\n\n"
-            "**📚 추천 책:** 『논리의 기술』 by 찰스 필립스\n"
-            "**🎬 추천 영화:** 《인셉션 (Inception)》"
-        )
+        desc = "🎯 분석형 - 논리적, 계획적이며 문제해결을 중시합니다."
+        book = "『논리의 기술』"
+        movie = "《인셉션》"
     elif result == "감정형":
-        description = (
-            "💖 **감정형**\n\n- 감정에 민감하고 따뜻한 사람입니다.\n"
-            "- 공감 능력이 뛰어나며, 감성적인 콘텐츠를 좋아해요.\n\n"
-            "**📚 추천 책:** 『감정 수업』 by 김병후\n"
-            "**🎬 추천 영화:** 《이터널 선샤인》"
-        )
+        desc = "💖 감정형 - 공감과 감성 중심, 타인의 감정을 잘 이해합니다."
+        book = "『감정 수업』"
+        movie = "《이터널 선샤인》"
     elif result == "혼란형":
-        description = (
-            "🌀 **혼란형**\n\n- 걱정이 많고 감정 기복이 클 수 있어요.\n"
-            "- 안정감을 중요시하며, 내면을 자주 돌아봅니다.\n\n"
-            "**📚 추천 책:** 『나는 생각이 너무 많아』 by 크리스텔 프티콜랭\n"
-            "**🎬 추천 영화:** 《인사이드 아웃》"
-        )
-    else:  # 행동형
-        description = (
-            "🔥 **행동형**\n\n- 즉흥적이고 도전적인 성향이에요.\n"
-            "- 생각보다는 행동이 먼저이며, 새로운 경험을 추구합니다.\n\n"
-            "**📚 추천 책:** 『기억 전달자』 by 로이스 로리\n"
-            "**🎬 추천 영화:** 《포레스트 검프》"
-        )
+        desc = "🌀 혼란형 - 걱정이 많고 불안정하지만 내면이 깊습니다."
+        book = "『나는 생각이 너무 많아』"
+        movie = "《인사이드 아웃》"
+    else:
+        desc = "🔥 행동형 - 즉흥적이고 도전적인 스타일, 에너지 넘칩니다."
+        book = "『기억 전달자』"
+        movie = "《포레스트 검프》"
 
-    # 결과 표시
-    st.markdown(description)
+    # 결과 출력
+    st.write(desc)
+    st.markdown(f"**📚 추천 책:** {book}")
+    st.markdown(f"**🎬 추천 영화:** {movie}")
 
-    # 공유 텍스트 생성
-    share_text = f"나의 심리 유형은 [{result}]!\n\n{description}"
-    st.text_area("📤 결과 공유 (복사해서 사용하세요)", share_text, height=200)
+    # 공유용 텍스트
+    st.text_area("📤 결과 공유 (복사해서 사용하세요)", f"🧠 나의 심리 유형은 [{result}]!\n\n{desc}\n\n📚 {book}\n🎬 {movie}", height=150)
 
-    st.markdown("---")
-    st.caption("※ 재미로 보는 심리 테스트입니다. 결과는 참고용입니다.")
+    # 새로 시작 버튼
+    if st.button("🔄 다시 테스트하기"):
+        for i in range(len(questions)):
+            st.session_state[f"q{i}"] = None
+        st.session_state.submitted = False
+        st.session_state.answers = []
+        st.experimental_rerun()

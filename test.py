@@ -2,161 +2,156 @@ import streamlit as st
 
 st.set_page_config(page_title="🌟 심리 테스트", layout="centered")
 
-# CSS 스타일: 모던하고 화려한 느낌
+# CSS 스타일: 어두운 배경 + 가독성 높은 글씨 + 모던한 느낌
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 
 body {
-    background: linear-gradient(135deg, #6B5B95, #B8A9C9);
+    background: #1e1e2f;
     font-family: 'Poppins', sans-serif;
-    color: #fff;
+    color: #e0e0e0;
+    margin: 0 10%;
 }
 
 .title {
     font-size: 48px;
     font-weight: 800;
     text-align: center;
-    margin-top: 30px;
-    margin-bottom: 5px;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
-    letter-spacing: 2px;
-    background: linear-gradient(90deg, #FF6A88, #FF99AC);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shine 3s infinite linear;
-}
-
-@keyframes shine {
-    0% {
-        background-position: 0% 50%;
-    }
-    100% {
-        background-position: 200% 50%;
-    }
+    margin-top: 40px;
+    margin-bottom: 10px;
+    color: #ff6584;
+    text-shadow: 1.5px 1.5px 8px #65001a;
+    letter-spacing: 3px;
 }
 
 .subtitle {
     text-align: center;
     font-size: 18px;
-    margin-bottom: 40px;
-    color: #eee;
-    letter-spacing: 1px;
+    margin-bottom: 45px;
+    color: #aaa;
     font-weight: 600;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
 }
 
 .question-card {
-    background: rgba(255, 255, 255, 0.15);
+    background: #2a2a40;
     border-radius: 20px;
-    padding: 25px 30px;
-    margin-bottom: 25px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 25px 35px;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 18px rgba(255, 101, 132, 0.35);
     transition: transform 0.3s ease;
+    border: 1px solid #ff6584;
 }
 
 .question-card:hover {
-    transform: scale(1.03);
-    box-shadow: 0 15px 30px rgba(255, 105, 180, 0.6);
+    transform: scale(1.04);
+    box-shadow: 0 15px 30px rgba(255, 101, 132, 0.7);
 }
 
 .question-text {
     font-size: 22px;
     font-weight: 700;
-    margin-bottom: 18px;
-    color: #fff;
+    margin-bottom: 20px;
+    color: #ff7a9e;
 }
 
 .stRadio > div {
-    font-size: 16px;
+    font-size: 17px;
     margin-left: 12px;
-    color: #FDEFF9;
+    color: #ffd1dc;
 }
 
 button[kind="primary"] {
-    background: #FF5E7E;
-    border-radius: 12px;
-    padding: 12px 25px;
+    background: #ff6584;
+    border-radius: 15px;
+    padding: 14px 30px;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 20px;
     border: none;
-    box-shadow: 0 8px 15px rgba(255, 94, 126, 0.6);
+    box-shadow: 0 8px 18px rgba(255, 101, 132, 0.6);
     transition: background 0.3s ease;
 }
 
 button[kind="primary"]:hover {
-    background: #FF3A5E;
-    box-shadow: 0 12px 25px rgba(255, 58, 94, 0.8);
+    background: #ff3a60;
+    box-shadow: 0 12px 28px rgba(255, 58, 96, 0.85);
     cursor: pointer;
 }
 
 .result-box {
-    background: rgba(255, 255, 255, 0.25);
+    background: #2c2c44;
     border-radius: 25px;
-    padding: 30px 40px;
-    margin-top: 40px;
-    box-shadow: 0 10px 30px rgba(255, 105, 180, 0.6);
+    padding: 35px 50px;
+    margin-top: 50px;
+    box-shadow: 0 12px 35px rgba(255, 101, 132, 0.85);
     text-align: center;
-    color: #fff;
+    color: #ffe6eb;
 }
 
 .result-title {
-    font-size: 38px;
+    font-size: 42px;
     font-weight: 900;
-    margin-bottom: 12px;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+    margin-bottom: 18px;
+    color: #ff6584;
+    text-shadow: 2px 2px 10px #66001c;
 }
 
 .result-desc {
     font-size: 20px;
     margin-bottom: 25px;
     font-weight: 600;
-    line-height: 1.3;
+    line-height: 1.5;
+    color: #ffd1dc;
 }
 
 .recommend {
-    font-size: 18px;
-    margin: 8px 0;
+    font-size: 19px;
+    margin: 12px 0 6px;
     font-weight: 700;
-    color: #FFD1DC;
+    color: #ff99b3;
+}
+
+.recommend-desc {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #ffc9d6;
+    font-style: italic;
 }
 
 textarea {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #fff !important;
+    background: #3a3a58 !important;
+    color: #ffe6eb !important;
     border-radius: 15px !important;
-    padding: 15px !important;
+    padding: 18px !important;
     font-size: 16px !important;
     font-family: 'Poppins', sans-serif !important;
-    border: 1px solid rgba(255, 255, 255, 0.35) !important;
-    box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4) !important;
+    border: 1px solid #ff6584 !important;
+    box-shadow: 0 6px 20px rgba(255, 101, 132, 0.6) !important;
     resize: none !important;
 }
 
 .reset-btn {
-    background: #FF3A5E !important;
-    border-radius: 15px !important;
-    padding: 12px 30px !important;
+    background: #ff3a60 !important;
+    border-radius: 18px !important;
+    padding: 14px 35px !important;
     font-weight: 700 !important;
-    font-size: 18px !important;
+    font-size: 20px !important;
     border: none !important;
-    box-shadow: 0 10px 25px rgba(255, 58, 94, 0.9) !important;
-    margin-top: 35px !important;
+    box-shadow: 0 12px 28px rgba(255, 58, 96, 0.9) !important;
+    margin-top: 45px !important;
     transition: background 0.3s ease !important;
 }
 
 .reset-btn:hover {
-    background: #FF1A3C !important;
+    background: #ff1a43 !important;
     cursor: pointer !important;
 }
 
 .footer {
-    margin-top: 60px;
-    font-size: 14px;
+    margin-top: 75px;
+    font-size: 15px;
     text-align: center;
-    color: #EEE;
+    color: #ccc;
     font-style: italic;
     letter-spacing: 1.1px;
 }
@@ -245,10 +240,30 @@ if st.button("🔍 결과 보기", key="submit_button") and not st.session_state
     result = max(scores, key=scores.get)
 
     descriptions = {
-        "분석형": ("🎯 분석형", "논리적이고 계획적인 타입이에요.", "『논리의 기술』", "《인셉션》"),
-        "감정형": ("💖 감정형", "감정을 잘 이해하고 공감하는 스타일입니다.", "『감정 수업』", "《이터널 선샤인》"),
-        "혼란형": ("🌀 혼란형", "걱정이 많고 내면이 깊어요.", "『나는 생각이 너무 많아』", "《인사이드 아웃》"),
-        "행동형": ("🔥 행동형", "즉흥적이고 에너지 넘치는 스타일입니다.", "『기억 전달자』", "《포레스트 검프》"),
+        "분석형": (
+            "🎯 분석형", 
+            "논리적이고 계획적인 타입이에요. 상황을 체계적으로 분석하고 문제를 해결하는 데 뛰어납니다.",
+            "『논리의 기술』 - 논리적 사고력을 키우는 책으로, 문제 해결에 도움이 됩니다.",
+            "《인셉션》 - 꿈속에서 꿈을 조작하는 복잡한 스토리와 논리적 사고가 돋보이는 영화입니다."
+        ),
+        "감정형": (
+            "💖 감정형", 
+            "감정을 잘 이해하고 공감하는 스타일입니다. 주변 사람들과 깊은 유대감을 형성합니다.",
+            "『감정 수업』 - 감정을 이해하고 조절하는 법을 배우는 데 도움이 되는 책입니다.",
+            "《이터널 선샤인》 - 감정의 깊이를 다룬 사랑 이야기로 마음을 울리는 영화입니다."
+        ),
+        "혼란형": (
+            "🌀 혼란형", 
+            "걱정이 많고 내면이 깊어요. 불안한 상황에서도 자신을 이해하려 노력합니다.",
+            "『나는 생각이 너무 많아』 - 생각이 많아 고민하는 이들을 위한 책입니다.",
+            "《인사이드 아웃》 - 감정의 다양한 면을 귀엽고 감동적으로 그린 애니메이션입니다."
+        ),
+        "행동형": (
+            "🔥 행동형", 
+            "즉흥적이고 에너지 넘치는 스타일입니다. 어려움 앞에서도 빠르게 대처합니다.",
+            "『기억 전달자』 - 행동과 선택에 관한 생각을 깊게 할 수 있는 책입니다.",
+            "《포레스트 검프》 - 다양한 삶의 순간들을 즉흥적으로 살아내는 주인공의 이야기입니다."
+        ),
     }
 
     title, desc, book, movie = descriptions[result]
@@ -263,9 +278,9 @@ if st.button("🔍 결과 보기", key="submit_button") and not st.session_state
     ''', unsafe_allow_html=True)
 
     share_text = f"나의 심리 유형은 [{result}]!\n\n{desc}\n\n📚 {book}\n🎬 {movie}"
-    st.text_area("📤 결과 공유 (복사해서 사용하세요)", share_text, height=150)
+    st.text_area("📤 결과 공유 (복사해서 사용하세요)", share_text, height=170)
 
-if st.button("🔄 다시 시작하기", key="reset_button"):
+if st.button("🔄 다시 시작하기", key="reset_button", help="테스트를 초기화하고 다시 시작합니다."):
     st.session_state.submitted = False
     st.session_state.answers = [None] * len(questions)
     st.experimental_rerun()
